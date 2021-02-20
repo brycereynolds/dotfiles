@@ -28,13 +28,13 @@ function linkDotfile {
 linkDotfile .vim
 linkDotfile .vimrc
 linkDotfile .ackrc
-linkDotfile .bashrc
-linkDotfile .gitconfig
-linkDotfile .tmux.conf
+#linkDotfile .bashrc
+#linkDotfile .gitconfig
+#linkDotfile .tmux.conf
 linkDotfile .goomwwmrc
 linkDotfile .inputrc
 linkDotfile .xinitrc
-linkDotfile .curlrc
+#linkDotfile .curlrc
 linkDotfile .gf
 
 mkdir -p $dotfilesDir/.vim/bundle

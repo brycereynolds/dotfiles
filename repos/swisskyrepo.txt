@@ -1,0 +1,5 @@
+git@github.com:swisskyrepo/PayloadsAllTheThings.git
+git@github.com:swisskyrepo/SSRFmap.git
+git@github.com:swisskyrepo/GraphQLmap.git
+git@github.com:swisskyrepo/SharpLAPS.git
+
