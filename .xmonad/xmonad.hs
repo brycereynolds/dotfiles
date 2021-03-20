@@ -5,6 +5,9 @@ import System.IO (hPutStrLn)
 import System.Exit (exitSuccess)
 import qualified XMonad.StackSet as W
 
+    -- Colors
+import Colors
+
     -- Actions
 import XMonad.Actions.CopyWindow (kill1)
 import XMonad.Actions.CycleWS (moveTo, shiftTo, WSType(..), nextScreen, prevScreen)
@@ -100,13 +103,13 @@ myEditor :: String
 myEditor = myTerminal ++ " -e vim "    -- Sets vim as editor for tree select
 
 myBorderWidth :: Dimension
-myBorderWidth = 2          -- Sets border width for windows
+myBorderWidth = 5          -- Sets border width for windows
 
 myNormColor :: String
-myNormColor   = "#282c34"  -- Border color of normal windows
+myNormColor   = color3  -- Border color of normal windows
 
 myFocusColor :: String
-myFocusColor  = "#46d9ff"  -- Border color of focused windows
+myFocusColor  = color1  -- Border color of focused windows
 
 altMask :: KeyMask
 altMask = mod1Mask         -- Setting this for use in xprompts
@@ -120,9 +123,9 @@ myStartupHook = do
           spawnOnce "clipmenud &"
           spawnOnce "nitrogen --restore &"
           spawnOnce "picom --experimental-backends &"
-          spawnOnce "nm-applet &"
-          spawnOnce "volumeicon &"
-          spawnOnce "trayer --edge top --align right --widthtype request --padding 6 --SetDockType true --SetPartialStrut true --expand true --monitor 1 --transparent true --alpha 0 --tint 0x282c34  --height 22 &"
+ --         spawnOnce "nm-applet &"
+ --         spawnOnce "volumeicon &"
+ --         spawnOnce "trayer --edge top --align right --distance 500 --distancefrom right  --widthtype request --padding 25 --SetDockType true --SetPartialStrut true --expand true --monitor 1 --transparent true --alpha 50 --tint 0x282c34  --height 22 &"
  --         spawnOnce "/usr/bin/emacs --daemon &" -- emacs daemon for the emacsclient
           -- spawnOnce "kak -d -s mysession &"  -- kakoune daemon for better performance
           -- spawnOnce "urxvtd -q -o -f &"      -- urxvt daemon for better performance
@@ -332,9 +335,8 @@ treeselectAction a = TS.treeselectAction a
          , Node (TS.TSNode "Doom Emacs eshell aliases" "the aliases for use in eshell" (spawn (myEditor ++ "$HOME/.doom.d/aliases"))) []
          ]
        , Node (TS.TSNode "+ xmobar configs" "My xmobar config files" (return ()))
-           [ Node (TS.TSNode "xmobar mon1" "status bar on monitor 1" (spawn (myEditor ++ "$HOME/.config/xmobar/xmobarrc0"))) []
-           , Node (TS.TSNode "xmobar mon2" "status bar on monitor 2" (spawn (myEditor ++ "$HOME/.config/xmobar/xmobarrc2"))) []
-           , Node (TS.TSNode "xmobar mon3" "status bar on monitor 3" (spawn (myEditor ++ "$HOME/.config/xmobar/xmobarrc1"))) []
+           [ Node (TS.TSNode "xmobar monitor left" "status bar on left monitor" (spawn (myEditor ++ "$HOME/.config/xmobar/monitorleftrc"))) []
+           , Node (TS.TSNode "xmobar monitor center" "status bar on center monitor" (spawn (myEditor ++ "$HOME/.config/xmobar/monitorcenterrc"))) []
            ]
        , Node (TS.TSNode "+ xmonad configs" "My xmonad config files" (return ()))
            [ Node (TS.TSNode "xmonad.hs" "My XMonad Main" (spawn (myEditor ++ "$HOME/.xmonad/xmonad.hs"))) []
@@ -473,11 +475,11 @@ myTreeNavigation = M.fromList
 dtXPConfig :: XPConfig
 dtXPConfig = def
       { font                = myFont
-      , bgColor             = "#282c34"
-      , fgColor             = "#bbc2cf"
-      , bgHLight            = "#c792ea"
-      , fgHLight            = "#000000"
-      , borderColor         = "#535974"
+      , bgColor             = background
+      , fgColor             = foreground
+      , bgHLight            = color2
+      , fgHLight            = color9
+      , borderColor         = color7
       , promptBorderWidth   = 0
       , promptKeymap        = dtXPKeymap
       , position            = Top
@@ -677,12 +679,12 @@ threeColMid = renamed [Replace "threeColMid"]
 
 -- setting colors for tabs layout and tabs sublayout.
 myTabTheme = def { fontName            = myFont
-                 , activeColor         = "#46d9ff"
-                 , inactiveColor       = "#313846"
-                 , activeBorderColor   = "#46d9ff"
-                 , inactiveBorderColor = "#282c34"
-                 , activeTextColor     = "#282c34"
-                 , inactiveTextColor   = "#d0d0d0"
+                 , activeColor         = color13
+                 , inactiveColor       = color6
+                 , activeBorderColor   = foreground
+                 , inactiveBorderColor = color11
+                 , activeTextColor     = color1
+                 , inactiveTextColor   = color11
                  }
 
 -- Theme for showWName which prints current workspace when you change workspaces.
@@ -690,8 +692,8 @@ myShowWNameTheme :: SWNConfig
 myShowWNameTheme = def
     { swn_font              = "xft:Ubuntu:bold:size=60"
     , swn_fade              = 1.0
-    , swn_bgcolor           = "#1c1f24"
-    , swn_color             = "#ffffff"
+    , swn_bgcolor           = color8
+    , swn_color             = foreground
     }
 
 -- The layout hook
@@ -740,9 +742,10 @@ myKeys =
         , ("M-S-q", io exitSuccess)             -- Quits xmonad
 
     -- Run Prompt
-        --, ("M-S-<Return>", shellPrompt dtXPConfig) -- Xmonad Shell Prompt
-         , ("M-S-<Return>", spawn "dmenu_run -i -p \"Run: \"") -- Dmenu
+        -- , ("M-S-<Return>", shellPrompt dtXPConfig) -- Xmonad Shell Prompt
+        -- , ("M-S-<Return>", spawn "dmenu_run -i -p \"Run: \"") -- Dmenu
         -- , ("M-S-<Return>", spawn "rofi -show drun -config ~/.config/rofi/themes/dt-dmenu.rasi -display-drun \"Run: \" -drun-display-format \"{name}\"") -- Rofi
+        , ("M-S-<Return>", spawn "rofi -show drun -config ~/.config/rofi/themes/dt-center.rasi -display-drun \"Run: \" -drun-display-format \"{name}\"") -- Rofi
 
     -- Other Prompts
         --, ("M-p c", calcPrompt dtXPConfig' "qalc") -- calcPrompt
@@ -883,8 +886,7 @@ main :: IO ()
 main = do
     -- Launching three instances of xmobar on their monitors.
     xmproc0 <- spawnPipe "xmobar -x 0 $HOME/.config/xmobar/xmobarrc0"
-    xmproc1 <- spawnPipe "xmobar -x 1 $HOME/.config/xmobar/xmobarrc2"
-    --xmproc2 <- spawnPipe "xmobar -x 2 $HOME/.config/xmobar/xmobarrc1"
+    xmproc1 <- spawnPipe "xmobar -x 1 $HOME/.config/xmobar/xmobarrc1"
     -- the xmonad, ya know...what the WM is named after!
     xmonad $ ewmh def
         { manageHook = ( isFullscreen --> doFullFloat ) <+> myManageHook <+> manageDocks
@@ -908,12 +910,12 @@ main = do
         , logHook = workspaceHistoryHook <+> myLogHook <+> dynamicLogWithPP xmobarPP
                         --{ ppOutput = \x -> hPutStrLn xmproc0 x  >> hPutStrLn xmproc1 x  >> hPutStrLn xmproc2 x
                         { ppOutput = \x -> hPutStrLn xmproc0 x  >> hPutStrLn xmproc1 x
-                        , ppCurrent = xmobarColor "#98be65" "" . wrap "[" "]"           -- Current workspace in xmobar
-                        , ppVisible = xmobarColor "#98be65" "" . clickable              -- Visible but not current workspace
-                        , ppHidden = xmobarColor "#82AAFF" "" . wrap "*" "" . clickable -- Hidden workspaces in xmobar
-                        , ppHiddenNoWindows = xmobarColor "#c792ea" ""  . clickable     -- Hidden workspaces (no windows)
-                        , ppTitle = xmobarColor "#b3afc2" "" . shorten 60               -- Title of active window in xmobar
-                        , ppSep =  "<fc=#666666> <fn=1>|</fn> </fc>"                    -- Separators in xmobar
+                        , ppCurrent = xmobarColor color2 "" . wrap "[" "]"           -- Current workspace in xmobar
+                        , ppVisible = xmobarColor color1 "" . clickable              -- Visible but not current workspace
+                        , ppHidden = xmobarColor color13 "" . wrap "*" "" . clickable -- Hidden workspaces in xmobar
+                        , ppHiddenNoWindows = xmobarColor color12 ""  . clickable     -- Hidden workspaces (no windows)
+                        , ppTitle = xmobarColor color2 "" . shorten 60               -- Title of active window in xmobar
+                        , ppSep =  "<fc=#a9a49c> <fn=1>|</fn> </fc>"                    -- Separators in xmobar
                         , ppUrgent = xmobarColor "#C45500" "" . wrap "!" "!"            -- Urgent workspace
                         , ppExtras  = [windowCount]                                     -- # of windows current workspace
                         , ppOrder  = \(ws:l:t:ex) -> [ws,l]++ex++[t]

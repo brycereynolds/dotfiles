@@ -1,0 +1,1 @@
+/home/unran/.cache/wal/colors.hs
